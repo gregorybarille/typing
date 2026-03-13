@@ -1,12 +1,16 @@
 import { generateId } from "./utils";
+import { type LayoutId } from "./keyboards";
+import { type Language } from "./i18n";
 
 export interface UserSettings {
-  layout: "qwerty" | "azerty";
-  language: "en" | "fr";
+  layout: LayoutId;
+  language: Language;
   goalWPM: number;
   goalAccuracy: number;
   soundEnabled: boolean;
   visualFeedback: boolean;
+  showKeyboard: boolean;
+  showFingerGuide: boolean;
   name: string;
   onboardingComplete: boolean;
 }
@@ -51,6 +55,8 @@ const DEFAULT_STATE: AppState = {
     goalAccuracy: 95,
     soundEnabled: false,
     visualFeedback: true,
+    showKeyboard: true,
+    showFingerGuide: false,
     name: "",
     onboardingComplete: false,
   },
