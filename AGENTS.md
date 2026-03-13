@@ -147,15 +147,18 @@ Add project scaffolding: Vite config, Tailwind, storage lib, lessons data
 
 ## ESLint Configuration
 
-ESLint is configured via CLI flags in the `lint` script:
-- Parser: `@typescript-eslint/parser`
-- Plugins: `@typescript-eslint`, `react-hooks`, `react-refresh`
+ESLint is configured via `.eslintrc.cjs`. The `npm run lint` script (see
+`package.json`) uses this config file and also passes these CLI flags:
 - `--report-unused-disable-directives` — flags unnecessary eslint-disable comments
 - `--max-warnings 0` — warnings are treated as errors
 
-No `.eslintrc` file exists; configuration may be in `package.json` or use
-`@typescript-eslint`'s recommended defaults. When adding rules, create an
-`eslint.config.js` (flat config) or `.eslintrc.cjs`.
+The config sets:
+- Parser: `@typescript-eslint/parser` (with `ecmaVersion: "latest"`, `sourceType: "module"`, `ecmaFeatures.jsx: true`)
+- Extends: `eslint:recommended`, `plugin:@typescript-eslint/recommended`, `plugin:react-hooks/recommended`
+- Plugins: `react-refresh`
+
+When adding or changing lint rules, update `.eslintrc.cjs` (or migrate to a flat
+config `eslint.config.js` if the project adopts that style in the future).
 
 ## Key Conventions for Agents
 
