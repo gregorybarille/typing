@@ -215,10 +215,10 @@ const fr: Translations = {
   "difficulty.hard": "Difficile",
 
   // Practice stages
-  "practiceStage.frStarter": "Francais debutant sans accents",
-  "practiceStage.frBridge": "Francais de transition avec mots simples",
-  "practiceStage.frAccentIntro": "Francais avec accents legers",
-  "practiceStage.frLiterary": "Francais litteraire complet",
+  "practiceStage.frStarter": "Français débutant sans accents",
+  "practiceStage.frBridge": "Français de transition avec mots simples",
+  "practiceStage.frAccentIntro": "Français avec accents légers",
+  "practiceStage.frLiterary": "Français littéraire complet",
 
   // Exercise
   "exercise.freePractice": "Pratique libre",
