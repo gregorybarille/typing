@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom"
 import { loadState } from "./lib/storage.ts"
 import { applyTheme } from "./lib/theme.ts"
 import Onboarding from "./pages/Onboarding.tsx"
@@ -10,6 +10,15 @@ import Settings from "./pages/Settings.tsx"
 
 // Apply stored accent color before first render
 applyTheme(loadState().user.accentColor)
+
+// Wrapper that forces TypingExercise to remount when mode/id or user settings change,
+// preventing stale chars/phase state from carrying over between exercises.
+function ExerciseRoute() {
+  const { pathname } = useLocation()
+  const { user } = loadState()
+  const key = `${pathname}-${user.language}-${user.strictLiteraryFrench}`
+  return <TypingExercise key={key} />
+}
 
 function RequireOnboarding({ children }: { children: React.ReactNode }) {
   const state = loadState()
@@ -42,7 +51,7 @@ export default function App() {
           path="/exercise/:mode/:id"
           element={
             <RequireOnboarding>
-              <TypingExercise />
+              <ExerciseRoute />
             </RequireOnboarding>
           }
         />
