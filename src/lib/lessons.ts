@@ -458,7 +458,7 @@ export function getLessonById(id: number): Lesson | undefined {
 }
 
 export function getLessonText(lessonId: number, lang: Language, strictLiterary = false): string {
-  if (lang === "fr" && !strictLiterary) {
+  if (!strictLiterary) {
     const overrideTexts = LESSON_TEXT_OVERRIDES[lessonId]?.[lang]
     if (overrideTexts && overrideTexts.length > 0) {
       return randomItem(overrideTexts)
