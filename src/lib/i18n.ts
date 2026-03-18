@@ -205,7 +205,7 @@ const fr: Translations = {
   "lessons.catLower": "Rangée inférieure",
   "lessons.catNumbers": "Chiffres",
   "lessons.catSymbols": "Ponctuation & Vitesse",
-  "lessons.difficulty": "Difficulte : {level}",
+  "lessons.difficulty": "Difficulté : {level}",
   "exercise.source": "Source : {source}",
   "exercise.stage": "Niveau : {label}",
 
