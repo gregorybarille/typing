@@ -1,4 +1,4 @@
-import { getFingerForKey, type LayoutId } from "../lib/keyboards.ts"
+import { getFingerForKey, getKeyboard, type LayoutId } from "../lib/keyboards.ts"
 import { t, type Language } from "../lib/i18n.ts"
 import { cn } from "../lib/utils.ts"
 import HandsSVG from "./HandsSVG.tsx"
@@ -20,6 +20,10 @@ export default function FingerGuide({ layout, lang, nextExpectedKey, className }
         : getFingerForKey(layout, nextExpectedKey)
       : undefined
 
+  const keyboard = getKeyboard(layout)
+  const homeLeftDisplay = keyboard?.homeLeft ? keyboard.homeLeft.toUpperCase() : "F"
+  const homeRightDisplay = keyboard?.homeRight ? keyboard.homeRight.toUpperCase() : "J"
+
   return (
     <div className={cn("space-y-3", className)}>
       <h3 className="text-sm font-semibold">{t(lang, "fingerGuide.title")}</h3>
@@ -28,8 +32,8 @@ export default function FingerGuide({ layout, lang, nextExpectedKey, className }
 
       <p className="text-center text-xs text-muted-foreground">
         {t(lang, "fingerGuide.homeKeys", {
-          left: "F",
-          right: "J",
+          left: homeLeftDisplay,
+          right: homeRightDisplay,
         })}
       </p>
     </div>
