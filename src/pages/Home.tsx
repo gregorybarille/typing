@@ -2,9 +2,10 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { loadState, type AppState } from "../lib/storage.ts"
 import { t } from "../lib/i18n.ts"
-import { LESSONS } from "../lib/lessons.ts"
+import { LESSONS, getDifficultyLabelKey, getPracticeStageKey } from "../lib/lessons.ts"
 import { Button } from "../components/ui/Button.tsx"
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card.tsx"
+import { Badge } from "../components/ui/Badge.tsx"
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "../components/ui/Card.tsx"
 import { Progress } from "../components/ui/Progress.tsx"
 import Header from "../components/Header.tsx"
 
@@ -27,6 +28,7 @@ export default function Home() {
     : 0
 
   const currentLesson = LESSONS.find((l) => l.id === progress.currentLesson) ?? LESSONS[0]
+  const strictLiterary = user.strictLiteraryFrench
 
   return (
     <div className="min-h-screen bg-background">
@@ -73,11 +75,11 @@ export default function Home() {
 
         {/* Progress + next lesson */}
         <div className="grid gap-4 sm:grid-cols-2">
-          <Card>
+          <Card className="flex flex-col">
             <CardHeader className="pb-2">
               <CardTitle className="text-base">{t(lang, "home.courseProgress")}</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="flex flex-1 flex-col space-y-3">
               <Progress value={progressPct} />
               <p className="text-sm text-muted-foreground">
                 {t(lang, "home.lessonsCompleted", {
@@ -86,29 +88,76 @@ export default function Home() {
                   pct: progressPct,
                 })}
               </p>
-              <Button className="w-full" onClick={() => navigate("/lessons")}>
+              <Button className="mt-auto w-full" onClick={() => navigate("/lessons")}>
                 {t(lang, "home.viewAllLessons")}
               </Button>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="flex flex-col">
             <CardHeader className="pb-2">
               <CardTitle className="text-base">{t(lang, "home.continueLearning")}</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <div>
-                <p className="font-medium">{currentLesson.title}</p>
-                <p className="text-sm text-muted-foreground">{currentLesson.description}</p>
+            <CardContent className="flex flex-1 flex-col space-y-3">
+              <div className="flex-1">
+                <div className="mb-1 flex items-center gap-2">
+                  <p className="font-medium">{currentLesson.title[lang]}</p>
+                  <Badge variant="secondary">
+                    {t(lang, getDifficultyLabelKey(currentLesson.difficulty))}
+                  </Badge>
+                </div>
+                <p className="text-sm text-muted-foreground">{currentLesson.description[lang]}</p>
+                {(() => {
+                  const stageKey = getPracticeStageKey(lang, currentLesson.id, strictLiterary)
+                  return stageKey ? (
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {t(lang, "exercise.stage", { label: t(lang, stageKey) })}
+                    </p>
+                  ) : null
+                })()}
               </div>
               <Button
-                className="w-full"
+                className="mt-auto w-full"
                 onClick={() => navigate(`/exercise/lesson/${currentLesson.id}`)}
               >
                 {t(lang, "home.startLesson")}
               </Button>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Quick practice */}
+        <div>
+          <h2 className="mb-3 text-lg font-semibold">{t(lang, "home.quickPractice")}</h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Card className="flex flex-col">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base">{t(lang, "exercise.freeMode")}</CardTitle>
+              </CardHeader>
+              <CardContent className="flex-1">
+                <p className="text-sm text-muted-foreground">{t(lang, "exercise.freeModeDesc")}</p>
+              </CardContent>
+              <CardFooter className="pt-2">
+                <Button className="w-full" variant="outline" onClick={() => navigate("/exercise/free/0")}>
+                  {t(lang, "exercise.freeMode")}
+                </Button>
+              </CardFooter>
+            </Card>
+
+            <Card className="flex flex-col">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base">{t(lang, "exercise.dictation")}</CardTitle>
+              </CardHeader>
+              <CardContent className="flex-1">
+                <p className="text-sm text-muted-foreground">{t(lang, "exercise.dictationDesc")}</p>
+              </CardContent>
+              <CardFooter className="pt-2">
+                <Button className="w-full" variant="outline" onClick={() => navigate("/exercise/dictation/0")}>
+                  {t(lang, "exercise.dictation")}
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
         </div>
 
         {/* Recent sessions */}

@@ -27,8 +27,8 @@ export default function Header({ state, onStateChange }: HeaderProps) {
     location.pathname === path ? "bg-accent text-accent-foreground" : ""
 
   return (
-    <header className="border-b border-border bg-card px-6 py-3">
-      <div className="mx-auto flex max-w-4xl items-center justify-between gap-4">
+    <header className="border-b border-border bg-card">
+      <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-6 py-3">
         {/* Logo */}
         <button
           className="shrink-0 text-xl font-bold text-primary"

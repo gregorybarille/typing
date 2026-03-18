@@ -2,6 +2,7 @@ import { useState } from "react"
 import { loadState, saveState, type AppState } from "../lib/storage.ts"
 import { type LayoutId } from "../lib/keyboards.ts"
 import { type Language, t } from "../lib/i18n.ts"
+import { ACCENT_COLORS, applyTheme } from "../lib/theme.ts"
 import { Button } from "../components/ui/Button.tsx"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card.tsx"
 import Header from "../components/Header.tsx"
@@ -50,6 +51,38 @@ export default function Settings() {
                 onChange={(e) => update("name", e.target.value)}
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">{t(lang, "settings.appearance")}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <label className="mb-2 block text-sm font-medium">
+                {t(lang, "settings.accentColor")}
+              </label>
+              <div className="flex flex-wrap gap-3">
+                {ACCENT_COLORS.map((color) => (
+                  <button
+                    key={color.name}
+                    title={color.label}
+                    aria-label={color.label}
+                    onClick={() => {
+                      update("accentColor", color.name)
+                      applyTheme(color.name)
+                    }}
+                    className={`h-8 w-8 rounded-full border-2 transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                      user.accentColor === color.name
+                        ? "border-foreground scale-110"
+                        : "border-transparent"
+                    }`}
+                    style={{ backgroundColor: color.swatch }}
+                  />
+                ))}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -119,6 +152,25 @@ export default function Settings() {
                 />
               </button>
             </div>
+
+            {user.language === "fr" && (
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium">{t(lang, "settings.strictLiteraryFrench")}</p>
+                  <p className="text-xs text-muted-foreground">{t(lang, "settings.strictLiteraryFrenchDesc")}</p>
+                </div>
+                <button
+                  role="switch"
+                  aria-checked={user.strictLiteraryFrench}
+                  onClick={() => update("strictLiteraryFrench", !user.strictLiteraryFrench)}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${user.strictLiteraryFrench ? "bg-primary" : "bg-muted"}`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${user.strictLiteraryFrench ? "translate-x-6" : "translate-x-1"}`}
+                  />
+                </button>
+              </div>
+            )}
 
             <div>
               <label className="mb-1.5 block text-sm font-medium" htmlFor="layout">

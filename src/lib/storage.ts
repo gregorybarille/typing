@@ -13,6 +13,8 @@ export interface UserSettings {
   showFingerGuide: boolean;
   name: string;
   onboardingComplete: boolean;
+  strictLiteraryFrench: boolean;
+  accentColor: string;
 }
 
 export interface Progress {
@@ -31,7 +33,7 @@ export interface SessionStat {
   accuracy: number;
   keystrokes: number;
   duration: number;
-  mode: "lesson" | "drill" | "free";
+  mode: "lesson" | "drill" | "free" | "dictation";
   lessonId?: number;
 }
 
@@ -59,6 +61,8 @@ const DEFAULT_STATE: AppState = {
     showFingerGuide: false,
     name: "",
     onboardingComplete: false,
+    strictLiteraryFrench: false,
+    accentColor: "blue",
   },
   progress: {
     currentLesson: 1,

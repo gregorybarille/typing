@@ -1,144 +1,525 @@
+import { type Language } from "./i18n"
+
+export type PassageDifficulty = "easy" | "medium" | "hard"
+
+interface LocalizedText {
+  en: string
+  fr: string
+}
+
 export interface Lesson {
-  id: number;
-  title: string;
-  description: string;
-  keys: string[];
-  targetWPM: number;
-  targetAccuracy: number;
-  minDuration: number;
-  texts: string[];
-  category: "home" | "upper" | "lower" | "numbers" | "symbols";
+  id: number
+  title: LocalizedText
+  description: LocalizedText
+  keys: string[]
+  targetWPM: number
+  targetAccuracy: number
+  minDuration: number
+  category: "home" | "upper" | "lower" | "numbers" | "symbols"
+  difficulty: PassageDifficulty
+}
+
+const LESSON_TEXT_OVERRIDES: Partial<Record<number, Record<Language, string[]>>> = {
+  1: {
+    en: [
+      "a sad dad asks a lad",
+      "a fast lad adds a scarf",
+      "dad adds a salad as a fad",
+      "a glad lass asks for salad",
+    ],
+    fr: [
+      "a sa da sa fa",
+      "la sala va a la salle",
+      "dada a sa salade a la salle",
+      "sa fala la salle a la salle",
+    ],
+  },
+  2: {
+    en: [
+      "jill will kick a silk jell",
+      "jkl jkl like silk",
+      "jill skill still looks well",
+      "kill the lull and like the skill",
+    ],
+    fr: [
+      "ji ki li ji ki li",
+      "lili a lu le lilas joli",
+      "le kali li le joli lilas",
+      "lili lit le joli livre",
+    ],
+  },
+  3: {
+    en: [
+      "all kids ask if jill falls",
+      "dad asks jill for a flask",
+      "skill and salad fill the hall",
+      "a lad still asks jill for silk",
+    ],
+    fr: [
+      "la fille lit le livre a la salle",
+      "le gars a mis la salade ici",
+      "lili a la clef et la laisse ici",
+      "la fille a dit que le sac est la",
+    ],
+  },
+  4: {
+    en: [
+      "glad halls flash with high flags",
+      "hash and gash fade in the hall",
+      "the glad ghost has a high laugh",
+      "flash the glass and hang the flag",
+    ],
+    fr: [
+      "hugo a glisse le galet a la gare",
+      "le chat a happe la glace du gars",
+      "gala et hugo changent de logis",
+      "le gars a cache la hache au hangar",
+    ],
+  },
+  5: {
+    en: [
+      "eve will smile while she rides inside",
+      "the rider sees the hillside in silence",
+      "he is still inside while jill smiles",
+      "the little fire is seen in the field",
+    ],
+    fr: [
+      "le sire relit le livre de l ile",
+      "le fil relie six idees et des rires",
+      "denis visite le site de l eglise",
+      "le ministre ecrit vite et relit ici",
+    ],
+  },
+  6: {
+    en: [
+      "rural rivers run under ruined towers",
+      "our runner turns up after sunrise",
+      "the ruler returns to us after a run",
+      "true runners use sure and regular turns",
+    ],
+    fr: [
+      "le roi arrive sur la rue du port",
+      "bruno trouve la route et ouvre la porte",
+      "le ruban rouge tourne sur le mur du salon",
+      "la troupe du roi arrive au jour du retour",
+    ],
+  },
+  7: {
+    en: [
+      "they try to stay steady in the tiny yard",
+      "the young envoy writes a tidy story today",
+      "tiny yellow torches stay dry in the yard",
+      "the trusty party waits by the city gate",
+    ],
+    fr: [
+      "tybalt quitte la cour et rejoint le chateau",
+      "le valet observe la cite et note le trajet",
+      "yves et thierry saluent le capitaine du roi",
+      "le page nettoie la table et range le stylet",
+    ],
+  },
+  8: {
+    en: [
+      "clean notes can trace each action in the scene",
+      "a captain can notice each nuance at once",
+      "the count can cancel no command at court",
+      "constance can conceal a secret in plain sight",
+    ],
+    fr: [
+      "Constance cache une lettre dans la niche du couvent.",
+      "Le capitaine annonce cinq consignes dans la cuisine.",
+      "La reine avance en silence vers la chambre du conseil.",
+      "Ce novice trace encore cinq cercles dans la cour ancienne.",
+    ],
+  },
+  9: {
+    en: [
+      "the brave messenger moves with calm and nerve",
+      "a velvet banner moves over the stone wall",
+      "marvel and valor matter in every move",
+      "the envoy saves a moment with a clever move",
+    ],
+    fr: [
+      "Le mousquetaire avance vers la grande ville en mars.",
+      "Milady observe le mouvement du carrosse dans l'avenue.",
+      "Le valet revient avec une missive pour madame de Chevreuse.",
+      "La rumeur arrive vite, mais le service demeure calme.",
+    ],
+  },
+  10: {
+    en: [
+      "the wizard writes six exact words with zeal",
+      "we watch the next envoy cross the plaza",
+      "the queen sees a wax seal fixed to the box",
+      "swift winds mix with the noise of the square",
+    ],
+    fr: [
+      "Le page explique aux voisins pourquoi ce message est exact.",
+      "Xavier observe le visage du marquis depuis la croisée.",
+      "Le deuxième convoi traverse la place sous un vent assez vif.",
+      "La reine exige un texte précis avant de quitter le palais.",
+    ],
+  },
+}
+
+const PASSAGES: Record<Language, Record<PassageDifficulty, string[]>> = {
+  en: {
+    easy: [
+      "As for the gift you give me, let it be a keepsake.",
+      "It's so much nicer for you to ride than go on foot.",
+      "And I, with the same grief, I died and met my fate.",
+      "Not even an older man could speak and do as well.",
+      "No, here's what I'll do, it's what seems best to me.",
+      "Now she lit a fire and made her supper in the room.",
+      "Did he bring some news of your father, his return?",
+      "My father is worlds away, dead or alive, who knows?",
+    ],
+    medium: [
+      "And tell me this for a fact, I need to know, where on earth am I?",
+      "Odysseus is my father, there was a man, or was he all a dream?",
+      "On the same trip do I go and give the news to King Laertes too?",
+      "For you, I have some good advice, if only you will accept it.",
+      "All men need the gods, but the man is younger, just about my age.",
+      "But among men, I must say, few if any could rival me in riches.",
+      "I'd no desire to go on living and see the rising light of day.",
+      "So now, as in years gone by, let us press on and grant him escort.",
+      "No doubt you will pay them back in blood when you come home.",
+      "Why, the moment I saw it, here before my eyes, I knew it was a sign.",
+    ],
+    hard: [
+      "First by far to see her was Prince Telemachus, sitting among the suitors, heart obsessed with grief.",
+      "But now the suitors trooped in with all their swagger and took their seats on low and high-backed chairs.",
+      "Our ship lies moored off farmlands far from town, riding in Rithron Cove, beneath Mount Nion's woods.",
+      "Ilus refused, he feared the wrath of the everlasting gods, but father, so fond of him, gave him all he wanted.",
+      "I beg you by Olympian Zeus, by Themis too, who sets assemblies free and calls us into session, stop, my friends!",
+      "Better for me if you were devouring all my treasure, all my cattle, if you were the ones, we'd make amends in no time.",
+      "We'd approach you for reparations round the town, demanding our goods till you'd returned the lot.",
+      "Only Antinous, who found it in himself to say, so high and mighty, Telemachus, such unbridled rage!",
+      "It's not the suitors here who deserve the blame, it's your own dear mother, the matchless queen of cunning.",
+      "Then to all these Pylians, for their splendid rites, grant a reward that warms their gracious hearts.",
+    ],
+  },
+  fr: {
+    easy: [
+      "Le roi parle a ses gardes dans la salle.",
+      "D Artagnan part a Paris avec son cheval.",
+      "Athos parle bas et Porthos rit tres fort.",
+      "Aramis va a la porte et salue le garde.",
+      "Le page court dans la cour puis va au logis.",
+      "Le valet sert le repas dans la grande salle.",
+      "Le roi voit la carte et parle de la route.",
+      "Le jeune gascon va vite et garde son sang froid.",
+    ],
+    medium: [
+      "Oui, et la France va payer d'une guerre le refus de son roi.",
+      "Non pas, s'il vous plaît, mon bel ami ; non, pas ici, du moins.",
+      "Venez, mes braves, dit le roi, venez ; j'ai à vous gronder.",
+      "Ceci n'est pas mon secret, je ne puis donc pas vous le dire.",
+      "Et vous dites qu'un de vos amis demeure dans cette maison ?",
+      "Mais ce n'est pas un nom d'homme, ça, c'est un nom de montagne !",
+      "Je ne sais pas si je devrais vous dire ce que je soupçonne.",
+      "Mais je ne sais pas si je ne commets pas une grande imprudence ?",
+      "Il le fera comme il le dit, reprit Porthos, il le fera tôt ou tard.",
+      "Je sais bien que vous ne tournez pas le dos aux vôtres, vous.",
+    ],
+    hard: [
+      "Je n'ai, mon fils, à vous donner que quinze écus, mon cheval et les conseils que vous venez d'entendre.",
+      "Il a commencé comme vous ; allez le voir avec cette lettre, et réglez-vous sur lui, afin de faire comme lui.",
+      "De Tréville, et il faut qu'elle se retrouve ; ou si elle ne se retrouve pas, il saura bien la faire retrouver, lui !",
+      "Il ne risquait pas davantage à dire vingt mille, mais une certaine pudeur juvénile le retint.",
+      "Un trait de lumière frappa tout à coup l'esprit de l'hôte, qui se donnait au diable en ne trouvant rien.",
+      "Que voulez-vous, disait le mousquetaire, la mode en vient ; c'est une folie, je le sais bien, mais c'est la mode.",
+      "Quant à vous, mon cher, vous avez un trop magnifique baudrier pour être bien fort là-dessus.",
+      "Voyons, vous, Porthos, n'avez-vous un si beau baudrier d'or que pour y suspendre une épée de paille ?",
+      "Non, répondit d'Artagnan piqué, non, et grâce à mes yeux je vois même ce que ne voient pas les autres.",
+      "Le mouchoir était en effet richement brodé et portait une couronne et des armes à l'un de ses coins.",
+    ],
+  },
 }
 
 export const LESSONS: Lesson[] = [
   {
-    id: 1, title: "Home Row - Left Hand", description: "Master the left home row: A S D F",
-    keys: ["a","s","d","f"], targetWPM: 15, targetAccuracy: 95, minDuration: 60, category: "home",
-    texts: ["add sad fad dad ass fas das","a sad lad had a flask add a dash","all falls fads dads asks","dad adds a salad fast","fads fall as dads asks"],
+    id: 1,
+    title: { en: "Home Row - Left Hand", fr: "Rangée de base - Main gauche" },
+    description: { en: "Start with the left hand home row keys", fr: "Commencez avec les touches de base de la main gauche" },
+    keys: ["a", "s", "d", "f"],
+    targetWPM: 15,
+    targetAccuracy: 95,
+    minDuration: 60,
+    category: "home",
+    difficulty: "easy",
   },
   {
-    id: 2, title: "Home Row - Right Hand", description: "Master the right home row: J K L",
-    keys: ["j","k","l"], targetWPM: 15, targetAccuracy: 95, minDuration: 60, category: "home",
-    texts: ["jkl lkj jll kll jkl","like kill jell lull silk","skill still kills jell","lull skill silk","kill lull jill keel"],
+    id: 2,
+    title: { en: "Home Row - Right Hand", fr: "Rangée de base - Main droite" },
+    description: { en: "Practice the right hand home row keys", fr: "Pratiquez les touches de base de la main droite" },
+    keys: ["j", "k", "l"],
+    targetWPM: 15,
+    targetAccuracy: 95,
+    minDuration: 60,
+    category: "home",
+    difficulty: "easy",
   },
   {
-    id: 3, title: "Home Row - Full", description: "Combine both hands on the home row",
-    keys: ["a","s","d","f","j","k","l"], targetWPM: 20, targetAccuracy: 95, minDuration: 120, category: "home",
-    texts: ["flask skill falls kids ask dads","all kids shall fall like silk","a lad falls as a disk skids","dads ask kids kids ask dads","flask falls silk skids kids fall"],
+    id: 3,
+    title: { en: "Home Row - Full", fr: "Rangée de base complète" },
+    description: { en: "Combine both hands on the home row", fr: "Combinez les deux mains sur la rangée de base" },
+    keys: ["a", "s", "d", "f", "j", "k", "l"],
+    targetWPM: 20,
+    targetAccuracy: 95,
+    minDuration: 120,
+    category: "home",
+    difficulty: "easy",
   },
   {
-    id: 4, title: "Adding G and H", description: "Extend home row with G and H keys",
-    keys: ["g","h"], targetWPM: 20, targetAccuracy: 95, minDuration: 120, category: "home",
-    texts: ["glad has high flash shall","shall glad high has flash","high halls glad dash hash","flash high glad ash gash","has hash flash glad high"],
+    id: 4,
+    title: { en: "Adding G and H", fr: "Ajout de G et H" },
+    description: { en: "Extend the home row with G and H", fr: "Étendez la rangée de base avec G et H" },
+    keys: ["g", "h"],
+    targetWPM: 20,
+    targetAccuracy: 95,
+    minDuration: 120,
+    category: "home",
+    difficulty: "easy",
   },
   {
-    id: 5, title: "Upper Row - E and I", description: "Reach up for E and I",
-    keys: ["e","i"], targetWPM: 22, targetAccuracy: 95, minDuration: 120, category: "upper",
-    texts: ["kids like side hike silk","she is inside a field","high skill slide file size","slide like a fish inside","she filed like skilled kids"],
+    id: 5,
+    title: { en: "Upper Row - E and I", fr: "Rangée supérieure - E et I" },
+    description: { en: "Reach for E and I while keeping rhythm", fr: "Atteignez E et I sans perdre le rythme" },
+    keys: ["e", "i"],
+    targetWPM: 22,
+    targetAccuracy: 95,
+    minDuration: 120,
+    category: "upper",
+    difficulty: "medium",
   },
   {
-    id: 6, title: "Upper Row - R and U", description: "Learn R and U keys",
-    keys: ["r","u"], targetWPM: 25, targetAccuracy: 95, minDuration: 120, category: "upper",
-    texts: ["ruse sure rule fur rural","rules are sure for rural use","fur sure rules are useful","rural rules sure are","sure useful rules fur"],
+    id: 6,
+    title: { en: "Upper Row - R and U", fr: "Rangée supérieure - R et U" },
+    description: { en: "Add R and U to your reach", fr: "Ajoutez R et U à votre geste" },
+    keys: ["r", "u"],
+    targetWPM: 25,
+    targetAccuracy: 95,
+    minDuration: 120,
+    category: "upper",
+    difficulty: "medium",
   },
   {
-    id: 7, title: "Upper Row - T and Y", description: "Extend with T and Y",
-    keys: ["t","y"], targetWPM: 25, targetAccuracy: 95, minDuration: 120, category: "upper",
-    texts: ["they try truly just stay","the truly just stay light","try to get the right style","style truly gets you there","they try to get it right"],
+    id: 7,
+    title: { en: "Upper Row - T and Y", fr: "Rangée supérieure - T et Y" },
+    description: { en: "Extend the top row with T and Y", fr: "Complétez la rangée supérieure avec T et Y" },
+    keys: ["t", "y"],
+    targetWPM: 25,
+    targetAccuracy: 95,
+    minDuration: 120,
+    category: "upper",
+    difficulty: "medium",
   },
   {
-    id: 8, title: "Lower Row - C and N", description: "Learn the lower row: C and N",
-    keys: ["c","n"], targetWPM: 25, targetAccuracy: 95, minDuration: 120, category: "lower",
-    texts: ["nice clean code can run","clean nice code runs nicely","can nice clean run code","nice clean running code","clean code can run nicely"],
+    id: 8,
+    title: { en: "Lower Row - C and N", fr: "Rangée inférieure - C et N" },
+    description: { en: "Learn the lower row with C and N", fr: "Travaillez la rangée inférieure avec C et N" },
+    keys: ["c", "n"],
+    targetWPM: 25,
+    targetAccuracy: 95,
+    minDuration: 120,
+    category: "lower",
+    difficulty: "medium",
   },
   {
-    id: 9, title: "Lower Row - V and M", description: "Add V and M to your repertoire",
-    keys: ["v","m"], targetWPM: 28, targetAccuracy: 95, minDuration: 120, category: "lower",
-    texts: ["move vim name marvel","vim moves names marvel","move name vim marvel","vim marvel move names","name move marvel vim"],
+    id: 9,
+    title: { en: "Lower Row - V and M", fr: "Rangée inférieure - V et M" },
+    description: { en: "Add V and M to the lower row", fr: "Ajoutez V et M à la rangée inférieure" },
+    keys: ["v", "m"],
+    targetWPM: 28,
+    targetAccuracy: 95,
+    minDuration: 120,
+    category: "lower",
+    difficulty: "medium",
   },
   {
-    id: 10, title: "Full Alphabet - W X Z", description: "Complete the alphabet with W, X, Z",
-    keys: ["w","x","z"], targetWPM: 30, targetAccuracy: 95, minDuration: 180, category: "lower",
-    texts: ["wax zero flex box wizard","zero wax wizard flex box","the wizard can flex with wax","zero boxes fix the wizard","wax wizard flex zero box"],
+    id: 10,
+    title: { en: "Full Alphabet - W X Z", fr: "Alphabet complet - W X Z" },
+    description: { en: "Complete the alphabet with the last difficult letters", fr: "Terminez l'alphabet avec les dernières lettres difficiles" },
+    keys: ["w", "x", "z"],
+    targetWPM: 30,
+    targetAccuracy: 95,
+    minDuration: 180,
+    category: "lower",
+    difficulty: "medium",
   },
   {
-    id: 11, title: "Numbers Row 1-5", description: "Learn the number keys 1-5",
-    keys: ["1","2","3","4","5"], targetWPM: 25, targetAccuracy: 95, minDuration: 180, category: "numbers",
-    texts: ["12 34 15 23 45 13 24 35","type 123 then 45 or 234","1 and 2 make 3 with 4 and 5","1234 5432 1234 5432","12345 54321 12345"],
+    id: 11,
+    title: { en: "Numbers Row 1-5", fr: "Rangée des chiffres 1-5" },
+    description: { en: "Practice the first half of the number row", fr: "Travaillez la première moitié de la rangée des chiffres" },
+    keys: ["1", "2", "3", "4", "5"],
+    targetWPM: 25,
+    targetAccuracy: 95,
+    minDuration: 180,
+    category: "numbers",
+    difficulty: "hard",
   },
   {
-    id: 12, title: "Numbers 6-0", description: "Master the rest of the number row",
-    keys: ["6","7","8","9","0"], targetWPM: 25, targetAccuracy: 95, minDuration: 180, category: "numbers",
-    texts: ["67 89 70 68 79 60 78","type 678 then 90 or 789","67890 09876 67890","6 and 7 make 8 with 9 and 0","6789 9876 6789"],
+    id: 12,
+    title: { en: "Numbers 6-0", fr: "Rangée des chiffres 6-0" },
+    description: { en: "Finish the number row", fr: "Terminez la rangée des chiffres" },
+    keys: ["6", "7", "8", "9", "0"],
+    targetWPM: 25,
+    targetAccuracy: 95,
+    minDuration: 180,
+    category: "numbers",
+    difficulty: "hard",
   },
   {
-    id: 13, title: "Punctuation", description: "Master common punctuation marks",
-    keys: [".","!","?"], targetWPM: 30, targetAccuracy: 95, minDuration: 180, category: "symbols",
-    texts: ["Hello world. How are you?","Wait really? Yes indeed!","Is it true? Yes. Really!","Come here please. Wait!","Are you sure? Yes I am!"],
+    id: 13,
+    title: { en: "Punctuation", fr: "Ponctuation" },
+    description: { en: "Handle punctuation with literary passages", fr: "Travaillez la ponctuation avec des extraits littéraires" },
+    keys: [".", "!", "?"],
+    targetWPM: 30,
+    targetAccuracy: 95,
+    minDuration: 180,
+    category: "symbols",
+    difficulty: "hard",
   },
   {
-    id: 14, title: "Real Words Practice", description: "Type real English sentences fluently",
-    keys: [], targetWPM: 35, targetAccuracy: 95, minDuration: 300, category: "symbols",
-    texts: [
-      "The quick brown fox jumps over the lazy dog.",
-      "Pack my box with five dozen liquor jugs.",
-      "How vexingly quick daft zebras jump.",
-      "The five boxing wizards jump quickly.",
-      "Sphinx of black quartz judge my vow.",
-    ],
+    id: 14,
+    title: { en: "Real Words Practice", fr: "Phrases réelles" },
+    description: { en: "Practice medium passages from the Odyssey", fr: "Travaillez des extraits moyens des Trois Mousquetaires" },
+    keys: [],
+    targetWPM: 35,
+    targetAccuracy: 95,
+    minDuration: 300,
+    category: "symbols",
+    difficulty: "medium",
   },
   {
-    id: 15, title: "Speed Challenge", description: "Push your speed with varied sentences",
-    keys: [], targetWPM: 45, targetAccuracy: 95, minDuration: 300, category: "symbols",
-    texts: [
-      "Practice makes perfect and speed will follow with patience.",
-      "Touch typing is a skill that improves with daily deliberate practice.",
-      "The best way to learn touch typing is through consistent repetition.",
-      "Keep your eyes on the screen and trust your fingers to find the keys.",
-      "Speed and accuracy both improve when you focus on the correct technique.",
-    ],
+    id: 15,
+    title: { en: "Speed Challenge", fr: "Défi vitesse" },
+    description: { en: "Type harder passages at speed", fr: "Tapez des extraits plus difficiles à grande vitesse" },
+    keys: [],
+    targetWPM: 45,
+    targetAccuracy: 95,
+    minDuration: 300,
+    category: "symbols",
+    difficulty: "hard",
   },
-];
+]
+
+function randomItem<T>(items: T[]): T {
+  return items[Math.floor(Math.random() * items.length)]
+}
+
+function uniqueTexts(texts: string[]): string[] {
+  return [...new Set(texts)]
+}
+
+function getProgressiveEnglishPool(currentLesson: number): string[] {
+  if (currentLesson <= 4) return uniqueTexts([...PASSAGES.en.easy])
+  if (currentLesson <= 8) return uniqueTexts([...PASSAGES.en.easy, ...PASSAGES.en.medium])
+  return uniqueTexts([...PASSAGES.en.medium, ...PASSAGES.en.hard])
+}
+
+function getProgressiveFrenchPool(currentLesson: number): string[] {
+  if (currentLesson <= 4) {
+    return uniqueTexts([
+      ...(LESSON_TEXT_OVERRIDES[1]?.fr ?? []),
+      ...(LESSON_TEXT_OVERRIDES[2]?.fr ?? []),
+      ...(LESSON_TEXT_OVERRIDES[3]?.fr ?? []),
+      ...(LESSON_TEXT_OVERRIDES[4]?.fr ?? []),
+    ])
+  }
+
+  if (currentLesson <= 7) {
+    return uniqueTexts([
+      ...(LESSON_TEXT_OVERRIDES[5]?.fr ?? []),
+      ...(LESSON_TEXT_OVERRIDES[6]?.fr ?? []),
+      ...(LESSON_TEXT_OVERRIDES[7]?.fr ?? []),
+    ])
+  }
+
+  if (currentLesson <= 10) {
+    return uniqueTexts([
+      ...(LESSON_TEXT_OVERRIDES[8]?.fr ?? []),
+      ...(LESSON_TEXT_OVERRIDES[9]?.fr ?? []),
+      ...(LESSON_TEXT_OVERRIDES[10]?.fr ?? []),
+      ...PASSAGES.fr.medium,
+    ])
+  }
+
+  return uniqueTexts([...PASSAGES.fr.medium, ...PASSAGES.fr.hard])
+}
+
+function getAllPassages(lang: Language): string[] {
+  return [...PASSAGES[lang].easy, ...PASSAGES[lang].medium, ...PASSAGES[lang].hard]
+}
 
 export function getLessonById(id: number): Lesson | undefined {
-  return LESSONS.find((l) => l.id === id);
+  return LESSONS.find((lesson) => lesson.id === id)
 }
 
-export function isLessonUnlocked(lessonId: number, completedIds: number[]): boolean {
-  if (lessonId === 1) return true;
-  return completedIds.includes(lessonId - 1);
+export function getLessonText(lessonId: number, lang: Language, strictLiterary = false): string {
+  if (!strictLiterary) {
+    const overrideTexts = LESSON_TEXT_OVERRIDES[lessonId]?.[lang]
+    if (overrideTexts && overrideTexts.length > 0) {
+      return randomItem(overrideTexts)
+    }
+  }
+
+  const lesson = getLessonById(lessonId)
+  if (!lesson) return randomItem(PASSAGES[lang].medium)
+  return randomItem(PASSAGES[lang][lesson.difficulty])
 }
 
-export const DRILL_SENTENCES: Record<string, string[]> = {
-  a: ["all ants are able to add and ask","a sad lad had a flask and asked dad","all animals act as amazing ambassadors"],
-  b: ["big blue birds bring bright berries","bob built a big brown barn beside brook","bold bears boldly brave the bitter blizzard"],
-  c: ["cool cats can catch clever creatures","careful cooks create classic crispy cuisine","curious cats consistently climb cedar cliffs"],
-  d: ["dogs dance daily during dark december","delightful ducks dive deep during daylight","dozens of dogs dash down dusty dirt drives"],
-  e: ["every elephant eats elegant emerald leaves","eagles eagerly explore each enormous evergreen","eleven eager eagles eat elegant evening meals"],
-  f: ["five frogs find fresh food fast","funny foxes flip fluffy feathers freely","fresh flowers float free from far fields"],
-  g: ["green grapes grow gloriously in gardens","glad gorillas gracefully greet golden guests","great gray geese graze gently on grass"],
-  h: ["happy horses hop high through the hills","helpful hens happily harvest hearty herbs here","huge hippos huddle here hoping heat helps"],
-  i: ["icy igloos inspire interesting imaginative ideas","intelligent insects inspect intricate ivory items","incredibly intricate insect images invite intense interest"],
-  j: ["jolly jesters juggle jars in july","jaguars jump joyfully just before june","just juggling jelly jars joyfully in january"],
-  k: ["kind kings keep kites knotted to keys","knowledgeable kids kick kicking kangaroos kindly","keen kittens keenly keep knocking kitchen kettles"],
-  l: ["large lions leap lightly like little lambs","lovely ladies leave lush lavender lily lands","lazy llamas linger lazily licking lemon lollipops"],
-  m: ["many mice make music in the meadow","magnificent moths move mainly past moonlit marshes","mighty mountains magnify many magnificent morning moments"],
-  n: ["nine nimble newts navigate narrow northern nights","numerous noble knights never neglect natural needs","new noon naps never negatively narrow nighttime"],
-  o: ["old owls observe the ocean on october","odd otters often open orange outdoor ovens","our old oak offers ordinary occupants odd overtime"],
-  p: ["happy people play piano perfectly past midnight","purple parrots perch proudly picking plump plums","pretty pink ponies prance past purple pine parks"],
-  q: ["quite quickly queens question quaint quill quality","quirky quiet quails quest quite quietly quickly","quartz quickly quotes quality questions quite quietly"],
-  r: ["red robins run rapidly round the rocks","rolling rivers rush rapidly round rough rocky ridges","round red roses rarely require rigorous routine repair"],
-  s: ["six snakes slide swiftly south seeking shade","small snails slowly slide since sunrise seems slow","seven silver swans swim silently since spring started"],
-  t: ["ten tiny turtles trek through thick trees","the thirty tiny tots trot through the town","tall trees tower triumphantly throughout their territory today"],
-  u: ["unique unicorns usually use unusual urban routes","under unusual umbrellas unusual uncles usually unite us","unique unusual users ultimately understand ultimate unity"],
-  v: ["vivid violins vibrate vigorously vaulting vast valleys","vast violet vines vividly validate very vibrant views","very vivid valuable vases vanish via various venues"],
-  w: ["wild wolves wander west watching winter weather","with warm winds we walked while wearing wool","wide western woods welcome wandering wildlife watching warmly"],
-  x: ["exercise extra xerography expert exactly six foxes mixing","extra oxygen fixes textbook examples six mixing boxes","foxes fix six boxes exactly mixing extra oxygen"],
-  y: ["yellow yaks yell yearly yet yield yearly","young yaks yearly yawn yearning yonder yesterday","your yellow yacht yields yet yonder yearning yearly"],
-  z: ["zesty zebras zigzag zero zones zealously","zero zesty zebras zealously zig zag zones","zeal zebras zero zones zig zapping zealously"],
-};
+export function generateDrillText(key: string, lang: Language, currentLesson = 1, strictLiterary = false): string {
+  const normalizedKey = key.toLowerCase()
+  const sourceTexts = lang === "fr"
+    ? (strictLiterary ? getAllPassages(lang) : getProgressiveFrenchPool(currentLesson))
+    : getProgressiveEnglishPool(currentLesson)
+  const matches = sourceTexts.filter((text) => {
+    const lower = text.toLowerCase()
+    const occurrences = lower.split(normalizedKey).length - 1
+    return occurrences >= 2
+  })
 
-export function generateDrillText(key: string): string {
-  const sentences = DRILL_SENTENCES[key.toLowerCase()] ?? [`practice the ${key} key repeatedly to improve`];
-  return sentences.join(". ") + ".";
+  if (matches.length > 0) {
+    return randomItem(matches)
+  }
+
+  if (lang === "fr") {
+    return randomItem(sourceTexts)
+  }
+
+  return randomItem(PASSAGES[lang].medium)
+}
+
+export function getFreePracticeText(lang: Language, currentLesson = 1, strictLiterary = false): string {
+  if (lang === "fr") {
+    const pool = strictLiterary
+      ? [...PASSAGES.fr.medium, ...PASSAGES.fr.hard]
+      : getProgressiveFrenchPool(currentLesson)
+    return randomItem(pool)
+  }
+
+  return randomItem(getProgressiveEnglishPool(currentLesson))
+}
+
+export function getLessonSource(lang: Language): string {
+  return lang === "fr" ? "Les Trois Mousquetaires" : "The Odyssey"
+}
+
+export function getPracticeStageKey(lang: Language, currentLesson: number, strictLiterary = false): string | null {
+  if (lang !== "fr") return null
+  if (strictLiterary) return "practiceStage.frLiterary"
+  if (currentLesson <= 4) return "practiceStage.frStarter"
+  if (currentLesson <= 7) return "practiceStage.frBridge"
+  if (currentLesson <= 10) return "practiceStage.frAccentIntro"
+  return "practiceStage.frLiterary"
+}
+
+export function getDifficultyLabelKey(difficulty: PassageDifficulty): string {
+  return `difficulty.${difficulty}`
+}
+
+export function isLessonUnlocked(_lessonId: number, _completedIds: number[]): boolean {
+  return true
 }
