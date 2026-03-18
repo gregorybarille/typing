@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom"
 import { loadState } from "./lib/storage.ts"
 import { applyTheme } from "./lib/theme.ts"
 import Onboarding from "./pages/Onboarding.tsx"
@@ -10,6 +10,13 @@ import Settings from "./pages/Settings.tsx"
 
 // Apply stored accent color before first render
 applyTheme(loadState().user.accentColor)
+
+// Force a fresh TypingExercise mount whenever the route params change so that
+// useState initializers re-run and stale exercise state is never shown.
+function KeyedExercise() {
+  const { mode, id } = useParams<{ mode: string; id: string }>()
+  return <TypingExercise key={`${mode}-${id}`} />
+}
 
 function RequireOnboarding({ children }: { children: React.ReactNode }) {
   const state = loadState()
@@ -42,7 +49,7 @@ export default function App() {
           path="/exercise/:mode/:id"
           element={
             <RequireOnboarding>
-              <TypingExercise />
+              <KeyedExercise />
             </RequireOnboarding>
           }
         />
