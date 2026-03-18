@@ -1,11 +1,15 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { loadState } from "./lib/storage.ts"
+import { applyTheme } from "./lib/theme.ts"
 import Onboarding from "./pages/Onboarding.tsx"
 import Home from "./pages/Home.tsx"
 import Lessons from "./pages/Lessons.tsx"
 import TypingExercise from "./pages/TypingExercise.tsx"
 import Stats from "./pages/Stats.tsx"
 import Settings from "./pages/Settings.tsx"
+
+// Apply stored accent color before first render
+applyTheme(loadState().user.accentColor)
 
 function RequireOnboarding({ children }: { children: React.ReactNode }) {
   const state = loadState()
