@@ -84,6 +84,31 @@ export default function TypingExercise() {
   const containerRef = useRef<HTMLDivElement>(null)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
+  // Reset all exercise state when navigating to a different exercise
+  useEffect(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current)
+      timerRef.current = null
+    }
+    const nextIsFree = mode === "free"
+    const nextIsDictation = mode === "dictation"
+    setChars(nextIsFree || nextIsDictation ? [] : buildCharStates(resolvedText))
+    setCursor(0)
+    setPhase("ready")
+    setStartTime(null)
+    setElapsed(0)
+    setErrors(0)
+    setTotalKeystrokes(0)
+    setFreeText("")
+    setDictationInput("")
+    setDictationPhase(nextIsDictation ? "input" : "ready")
+    if (!nextIsDictation) {
+      setTimeout(() => containerRef.current?.focus(), 0)
+    }
+    // resolvedText is derived from mode/id/lang/strictLiterary — listing those is sufficient
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, id, lang, strictLiterary])
+
   // Toggle states from user settings
   const [showKeyboard, setShowKeyboard] = useState(state.user.showKeyboard)
   const [showFingerGuide, setShowFingerGuide] = useState(state.user.showFingerGuide)
