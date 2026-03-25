@@ -34,7 +34,7 @@ export default function Header({ state, onStateChange }: HeaderProps) {
           className="shrink-0 text-xl font-bold text-primary"
           onClick={() => navigate("/")}
         >
-          TypingMaster
+          Unseen Keys
         </button>
 
         {/* Nav */}

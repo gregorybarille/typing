@@ -13,14 +13,23 @@ interface KeyboardVisualProps {
 
 function KeyCap({ keyDef, isActive }: { keyDef: KeyDef; isActive: boolean }) {
   const isModifier = keyDef.isModifier ?? false
-  const colors = isModifier
-    ? "bg-gray-100 border-gray-300 text-gray-500"
-    : FINGER_COLORS[keyDef.finger]
+  const colors = FINGER_COLORS[keyDef.finger]
 
   // Width mapping: convert numeric units to flex values
   const widthStyle: React.CSSProperties = keyDef.width
     ? { flex: `${keyDef.width} 0 0` }
     : { flex: "1 0 0" }
+
+  // ISO Enter bottom continuation — render as a blank keycap (occupies space, no label)
+  if (keyDef.enterCont) {
+    return (
+      <div
+        className={cn("relative min-w-0 rounded-sm border h-10 select-none", colors)}
+        style={widthStyle}
+        title="Enter"
+      />
+    )
+  }
 
   const hasDual = !isModifier && keyDef.shift !== undefined && keyDef.key !== "space"
 
@@ -37,7 +46,7 @@ function KeyCap({ keyDef, isActive }: { keyDef: KeyDef; isActive: boolean }) {
   return (
     <div
       className={cn(
-        "relative flex min-w-0 rounded-md border-2 px-1 font-mono transition-all select-none overflow-hidden",
+        "relative flex min-w-0 rounded-sm border px-1 font-mono transition-all select-none overflow-hidden",
         hasDual ? "h-10 flex-col items-center justify-between py-0.5" : "h-10 items-center justify-center",
         colors,
         isActive && "ring-2 ring-primary scale-95 brightness-90",
@@ -72,7 +81,7 @@ export default function KeyboardVisual({ layout, activeKey, className }: Keyboar
       {keyboard.rows.map((row, ri) => (
         <div
           key={ri}
-          className="flex gap-1"
+          className="flex gap-0"
         >
           {row.map((keyDef, ki) => {
             const isActive = activeKey

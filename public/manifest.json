@@ -1,6 +1,6 @@
 {
-  "name": "TypingMaster",
-  "short_name": "TypingMaster",
+  "name": "Unseen Keys",
+  "short_name": "Unseen Keys",
   "description": "Touch typing trainer",
   "start_url": "/",
   "display": "standalone",

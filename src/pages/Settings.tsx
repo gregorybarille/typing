@@ -153,6 +153,23 @@ export default function Settings() {
               </button>
             </div>
 
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">{t(lang, "settings.highlightKeys")}</p>
+                <p className="text-xs text-muted-foreground">{t(lang, "settings.highlightKeysDesc")}</p>
+              </div>
+              <button
+                role="switch"
+                aria-checked={user.highlightKeys}
+                onClick={() => update("highlightKeys", !user.highlightKeys)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${user.highlightKeys ? "bg-primary" : "bg-muted"}`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${user.highlightKeys ? "translate-x-6" : "translate-x-1"}`}
+                />
+              </button>
+            </div>
+
             {user.language === "fr" && (
               <div className="flex items-center justify-between">
                 <div>

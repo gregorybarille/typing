@@ -405,12 +405,25 @@ export const LESSONS: Lesson[] = [
   },
 ]
 
-function randomItem<T>(items: T[]): T {
-  return items[Math.floor(Math.random() * items.length)]
-}
-
 function uniqueTexts(texts: string[]): string[] {
   return [...new Set(texts)]
+}
+
+// Pick `count` unique items at random; if pool is smaller, cycle through shuffled pool.
+function pickMultiple(pool: string[], count: number): string {
+  if (pool.length === 0) return ""
+  const shuffled = [...pool].sort(() => Math.random() - 0.5)
+  const result: string[] = []
+  for (let i = 0; i < count; i++) {
+    result.push(shuffled[i % shuffled.length])
+  }
+  return result.join(" ")
+}
+
+const PASSAGE_COUNT: Record<PassageDifficulty, number> = {
+  easy: 8,
+  medium: 6,
+  hard: 5,
 }
 
 function getProgressiveEnglishPool(currentLesson: number): string[] {
@@ -461,13 +474,13 @@ export function getLessonText(lessonId: number, lang: Language, strictLiterary =
   if (!strictLiterary) {
     const overrideTexts = LESSON_TEXT_OVERRIDES[lessonId]?.[lang]
     if (overrideTexts && overrideTexts.length > 0) {
-      return randomItem(overrideTexts)
+      return pickMultiple(overrideTexts, Math.min(overrideTexts.length, 5))
     }
   }
 
   const lesson = getLessonById(lessonId)
-  if (!lesson) return randomItem(PASSAGES[lang].medium)
-  return randomItem(PASSAGES[lang][lesson.difficulty])
+  const difficulty: PassageDifficulty = lesson?.difficulty ?? "medium"
+  return pickMultiple(PASSAGES[lang][difficulty], PASSAGE_COUNT[difficulty])
 }
 
 export function generateDrillText(key: string, lang: Language, currentLesson = 1, strictLiterary = false): string {
@@ -481,15 +494,8 @@ export function generateDrillText(key: string, lang: Language, currentLesson = 1
     return occurrences >= 2
   })
 
-  if (matches.length > 0) {
-    return randomItem(matches)
-  }
-
-  if (lang === "fr") {
-    return randomItem(sourceTexts)
-  }
-
-  return randomItem(PASSAGES[lang].medium)
+  const pool = matches.length > 0 ? matches : sourceTexts
+  return pickMultiple(pool, PASSAGE_COUNT.medium)
 }
 
 export function getFreePracticeText(lang: Language, currentLesson = 1, strictLiterary = false): string {
@@ -497,10 +503,10 @@ export function getFreePracticeText(lang: Language, currentLesson = 1, strictLit
     const pool = strictLiterary
       ? [...PASSAGES.fr.medium, ...PASSAGES.fr.hard]
       : getProgressiveFrenchPool(currentLesson)
-    return randomItem(pool)
+    return pickMultiple(pool, PASSAGE_COUNT.medium)
   }
 
-  return randomItem(getProgressiveEnglishPool(currentLesson))
+  return pickMultiple(getProgressiveEnglishPool(currentLesson), PASSAGE_COUNT.medium)
 }
 
 export function getLessonSource(lang: Language): string {

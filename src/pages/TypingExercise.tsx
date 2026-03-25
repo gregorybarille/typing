@@ -28,6 +28,11 @@ interface CharState {
   status: "pending" | "correct" | "wrong"
 }
 
+// Normalize a character for comparison: NFC Unicode form + straight apostrophe/quote variants
+function normalizeChar(c: string): string {
+  return c.normalize("NFC").replace(/[\u2018\u2019\u201A\u201B\u2032\u2035\u0060\u00B4]/g, "'")
+}
+
 function buildCharStates(text: string): CharState[] {
   return text.split("").map((c) => ({ char: c, status: "pending" }))
 }
@@ -186,7 +191,8 @@ export default function TypingExercise() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (e.ctrlKey || e.metaKey || e.altKey) return
+      // Block Ctrl/Cmd shortcuts but allow AltGr (which sets both ctrlKey+altKey on Windows)
+      if (e.metaKey || (e.ctrlKey && !e.altKey)) return
       if (e.key === "Tab") {
         e.preventDefault()
         return
@@ -235,7 +241,7 @@ export default function TypingExercise() {
       if (cursor >= chars.length) return
 
       const expected = chars[cursor].char
-      const correct = key === expected
+      const correct = normalizeChar(key) === normalizeChar(expected)
       const newChars = [...chars]
       newChars[cursor] = { char: expected, status: correct ? "correct" : "wrong" }
       setChars(newChars)
@@ -324,7 +330,7 @@ export default function TypingExercise() {
         <header className="border-b border-border bg-card">
           <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-3">
             <button className="text-lg font-bold text-primary" onClick={() => navigate("/")}>
-              TypingMaster
+              Unseen Keys
             </button>
             <div className="text-sm text-muted-foreground">{t(lang, "exercise.dictation")}</div>
             <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
@@ -367,7 +373,7 @@ export default function TypingExercise() {
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-3">
           <button className="text-lg font-bold text-primary" onClick={() => navigate("/")}>
-            TypingMaster
+            Unseen Keys
           </button>
           <div className="text-sm text-muted-foreground">
             {lesson
@@ -604,7 +610,7 @@ export default function TypingExercise() {
 
         {/* Visual keyboard */}
         {showKeyboard && phase !== "done" && (
-          <KeyboardVisual layout={state.user.layout} activeKey={nextExpectedKey} />
+          <KeyboardVisual layout={state.user.layout} activeKey={state.user.highlightKeys ? nextExpectedKey : undefined} />
         )}
 
         {/* Finger guide */}
@@ -612,7 +618,7 @@ export default function TypingExercise() {
           <FingerGuide
             layout={state.user.layout}
             lang={lang}
-            nextExpectedKey={nextExpectedKey}
+            nextExpectedKey={state.user.highlightKeys ? nextExpectedKey : undefined}
           />
         )}
       </main>

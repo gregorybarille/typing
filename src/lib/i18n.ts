@@ -12,7 +12,7 @@ const en: Translations = {
   "nav.settings": "Settings",
 
   // Onboarding
-  "onboarding.welcome": "Welcome to TypingMaster",
+  "onboarding.welcome": "Welcome to Unseen Keys",
   "onboarding.description": "Learn touch typing step by step, track your progress, and improve your speed and accuracy.",
   "onboarding.nameLabel": "What's your name?",
   "onboarding.namePlaceholder": "Enter your name",
@@ -129,6 +129,8 @@ const en: Translations = {
   "settings.strictLiteraryFrenchDesc": "Skip beginner progression — always use full literary French passages",
   "settings.appearance": "Appearance",
   "settings.accentColor": "Accent Color",
+  "settings.highlightKeys": "Highlight Next Key",
+  "settings.highlightKeysDesc": "Show the next expected key highlighted on the keyboard",
 
   // Keyboard layouts
   "layout.qwerty": "QWERTY (US)",
@@ -161,7 +163,7 @@ const fr: Translations = {
   "nav.settings": "Paramètres",
 
   // Onboarding
-  "onboarding.welcome": "Bienvenue sur TypingMaster",
+  "onboarding.welcome": "Bienvenue sur Unseen Keys",
   "onboarding.description": "Apprenez la dactylographie étape par étape, suivez vos progrès et améliorez votre vitesse et votre précision.",
   "onboarding.nameLabel": "Comment vous appelez-vous ?",
   "onboarding.namePlaceholder": "Entrez votre nom",
@@ -278,6 +280,8 @@ const fr: Translations = {
   "settings.strictLiteraryFrenchDesc": "Ignorer la progression débutant — toujours utiliser des extraits littéraires complets",
   "settings.appearance": "Apparence",
   "settings.accentColor": "Couleur d'accentuation",
+  "settings.highlightKeys": "Mise en évidence de la touche",
+  "settings.highlightKeysDesc": "Afficher la prochaine touche attendue en surbrillance sur le clavier",
 
   // Keyboard layouts
   "layout.qwerty": "QWERTY (US)",
