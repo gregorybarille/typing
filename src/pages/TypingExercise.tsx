@@ -36,9 +36,10 @@ interface CharState {
   status: "pending" | "correct" | "wrong"
 }
 
-// Normalize a character for comparison: NFC Unicode form + straight apostrophe/quote variants
+// Normalize a character for comparison: NFC form + typographic apostrophes as "'"
+// (backtick and acute accent are real keys of their own, so they are not mapped)
 function normalizeChar(c: string): string {
-  return c.normalize("NFC").replace(/[\u2018\u2019\u201A\u201B\u2032\u2035\u0060\u00B4]/g, "'")
+  return c.normalize("NFC").replace(/[\u2018\u2019\u201A\u201B\u2032\u2035]/g, "'")
 }
 
 function buildCharStates(text: string): CharState[] {

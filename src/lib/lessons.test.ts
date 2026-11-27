@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { getLessonText } from "./lessons.ts"
+import { getLessonText, pickMultiple } from "./lessons.ts"
 import { getFingerForKey } from "./keyboards.ts"
 
 describe("lessons", () => {
@@ -10,6 +10,15 @@ describe("lessons", () => {
         for (let i = 0; i < 10; i++) expect(getLessonText(id, lang)).toMatch(/\d/)
       }
     }
+  })
+})
+
+describe("pickMultiple", () => {
+  it("never repeats an item when the pool is smaller than the count", () => {
+    expect(pickMultiple(["only one"], 6)).toBe("only one")
+    const picked = pickMultiple(["a", "b", "c"], 6).split(" ")
+    expect(new Set(picked).size).toBe(3)
+    expect(picked).toHaveLength(3)
   })
 })
 

@@ -421,15 +421,16 @@ function uniqueTexts(texts: string[]): string[] {
   return [...new Set(texts)]
 }
 
-// Pick `count` unique items at random; if pool is smaller, cycle through shuffled pool.
-function pickMultiple(pool: string[], count: number): string {
-  if (pool.length === 0) return ""
-  const shuffled = [...pool].sort(() => Math.random() - 0.5)
-  const result: string[] = []
-  for (let i = 0; i < count; i++) {
-    result.push(shuffled[i % shuffled.length])
+// Pick up to `count` distinct items in random order (never repeats when the pool is small).
+export function pickMultiple(pool: string[], count: number): string {
+  const shuffled = [...pool]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    const tmp = shuffled[i]
+    shuffled[i] = shuffled[j]
+    shuffled[j] = tmp
   }
-  return result.join(" ")
+  return shuffled.slice(0, count).join(" ")
 }
 
 const PASSAGE_COUNT: Record<PassageDifficulty, number> = {
@@ -486,7 +487,7 @@ export function getLessonText(lessonId: number, lang: Language, strictLiterary =
   if (!strictLiterary) {
     const overrideTexts = LESSON_TEXT_OVERRIDES[lessonId]?.[lang]
     if (overrideTexts && overrideTexts.length > 0) {
-      return pickMultiple(overrideTexts, Math.min(overrideTexts.length, 5))
+      return pickMultiple(overrideTexts, 5)
     }
   }
 
