@@ -1,4 +1,4 @@
-import { getKeyboard, FINGER_COLORS, type LayoutId, type KeyDef } from "../lib/keyboards.ts"
+import { findKey, getKeyboard, FINGER_COLORS, type LayoutId, type KeyDef } from "../lib/keyboards.ts"
 import { cn } from "../lib/utils.ts"
 
 interface KeyboardVisualProps {
@@ -66,6 +66,7 @@ function KeyCap({ keyDef, isActive }: { keyDef: KeyDef; isActive: boolean }) {
 
 export default function KeyboardVisual({ layout, activeKey, className }: KeyboardVisualProps) {
   const keyboard = getKeyboard(layout)
+  const activeKeyDef = activeKey ? findKey(layout, activeKey) : undefined
 
   return (
     <div className={cn("space-y-1 rounded-xl border border-border bg-muted/20 p-3", className)}>
@@ -74,13 +75,9 @@ export default function KeyboardVisual({ layout, activeKey, className }: Keyboar
           key={ri}
           className="flex gap-1"
         >
-          {row.map((keyDef, ki) => {
-            const isActive = activeKey
-              ? (!keyDef.isModifier && keyDef.key === activeKey.toLowerCase()) ||
-                (activeKey === " " && keyDef.key === "space")
-              : false
-            return <KeyCap key={ki} keyDef={keyDef} isActive={isActive} />
-          })}
+          {row.map((keyDef, ki) => (
+            <KeyCap key={ki} keyDef={keyDef} isActive={keyDef === activeKeyDef} />
+          ))}
         </div>
       ))}
     </div>

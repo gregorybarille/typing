@@ -23,8 +23,10 @@ export default function Home() {
   const avgWPM = stats.length
     ? Math.round(stats.slice(0, 10).reduce((s, x) => s + x.wpm, 0) / Math.min(stats.length, 10))
     : 0
-  const avgAccDisplay = stats.length
-    ? Math.round(stats.slice(0, 10).reduce((s, x) => s + x.accuracy, 0) / Math.min(stats.length, 10))
+  // Free mode has no target text, so its stored 100% accuracy is not a measurement
+  const accSessions = stats.slice(0, 10).filter((x) => x.mode !== "free")
+  const avgAccDisplay = accSessions.length
+    ? Math.round(accSessions.reduce((s, x) => s + x.accuracy, 0) / accSessions.length)
     : 0
 
   const currentLesson = LESSONS.find((l) => l.id === progress.currentLesson) ?? LESSONS[0]
@@ -79,7 +81,7 @@ export default function Home() {
             <CardHeader className="pb-2">
               <CardTitle className="text-base">{t(lang, "home.courseProgress")}</CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-1 flex-col space-y-3">
+            <CardContent className="flex-1 space-y-3">
               <Progress value={progressPct} />
               <p className="text-sm text-muted-foreground">
                 {t(lang, "home.lessonsCompleted", {
@@ -88,18 +90,20 @@ export default function Home() {
                   pct: progressPct,
                 })}
               </p>
-              <Button className="mt-auto w-full" onClick={() => navigate("/lessons")}>
+            </CardContent>
+            <CardFooter className="pt-2">
+              <Button className="w-full" onClick={() => navigate("/lessons")}>
                 {t(lang, "home.viewAllLessons")}
               </Button>
-            </CardContent>
+            </CardFooter>
           </Card>
 
           <Card className="flex flex-col">
             <CardHeader className="pb-2">
               <CardTitle className="text-base">{t(lang, "home.continueLearning")}</CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-1 flex-col space-y-3">
-              <div className="flex-1">
+            <CardContent className="flex-1">
+              <div>
                 <div className="mb-1 flex items-center gap-2">
                   <p className="font-medium">{currentLesson.title[lang]}</p>
                   <Badge variant="secondary">
@@ -116,13 +120,15 @@ export default function Home() {
                   ) : null
                 })()}
               </div>
+            </CardContent>
+            <CardFooter className="pt-2">
               <Button
-                className="mt-auto w-full"
+                className="w-full"
                 onClick={() => navigate(`/exercise/lesson/${currentLesson.id}`)}
               >
                 {t(lang, "home.startLesson")}
               </Button>
-            </CardContent>
+            </CardFooter>
           </Card>
         </div>
 
@@ -171,7 +177,7 @@ export default function Home() {
                 {recentSessions.map((s) => (
                   <div key={s.id} className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">
-                      {new Date(s.date).toLocaleDateString()} — {s.mode}
+                      {new Date(`${s.date}T00:00`).toLocaleDateString()} — {s.mode}
                     </span>
                     <span className="font-medium">
                       {s.wpm} WPM · {s.accuracy}%

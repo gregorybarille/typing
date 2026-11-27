@@ -262,11 +262,14 @@ export function getAllKeys(layout: LayoutId): KeyDef[] {
   return KEYBOARDS[layout].rows.flat()
 }
 
-/** Lookup a finger assignment for a specific key label in a layout */
+/** Find the key that types a character: its main label first, then its shifted label */
+export function findKey(layout: LayoutId, char: string): KeyDef | undefined {
+  const keys = getAllKeys(layout).filter((kd) => !kd.isModifier)
+  const c = char === " " ? "space" : char
+  return keys.find((kd) => kd.key === c.toLowerCase()) ?? keys.find((kd) => kd.shift === c)
+}
+
+/** Lookup a finger assignment for a character in a layout */
 export function getFingerForKey(layout: LayoutId, key: string): Finger | undefined {
-  // Skip modifier keys — only match typing keys
-  const k = getAllKeys(layout).find(
-    (kd) => !kd.isModifier && kd.key === key.toLowerCase(),
-  )
-  return k?.finger
+  return findKey(layout, key)?.finger
 }

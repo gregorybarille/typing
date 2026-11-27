@@ -14,7 +14,6 @@ export interface Lesson {
   keys: string[]
   targetWPM: number
   targetAccuracy: number
-  minDuration: number
   category: "home" | "upper" | "lower" | "numbers" | "symbols"
   difficulty: PassageDifficulty
 }
@@ -160,6 +159,34 @@ const LESSON_TEXT_OVERRIDES: Partial<Record<number, Record<Language, string[]>>>
       "La reine exige un texte précis avant de quitter le palais.",
     ],
   },
+  11: {
+    en: [
+      "call 12 friends at 3 and 45 more at 5",
+      "the 4 ships left with 23 men and 15 oars",
+      "add 31 and 24 and you get 55",
+      "room 214 has 3 desks and 5 lamps",
+    ],
+    fr: [
+      "il y a 12 chevaux et 3 gardes dans la cour",
+      "le roi attend 45 lettres et 21 messages",
+      "la salle 34 compte 15 places et 2 portes",
+      "nous partons le 3 avec 24 amis et 51 valets",
+    ],
+  },
+  12: {
+    en: [
+      "the 7 riders came home at 9 with 80 coins",
+      "we sailed 600 miles in 9 days and 7 nights",
+      "page 86 lists 70 names and 9 dates",
+      "the 60 suitors ate 98 loaves and 7 lambs",
+    ],
+    fr: [
+      "le convoi de 70 hommes arrive a 9 heures",
+      "Athos a 60 ecus et Porthos en a 87",
+      "la route fait 960 lieues en 8 jours",
+      "le 6 mai, 79 gardes quittent Paris",
+    ],
+  },
 }
 
 const PASSAGES: Record<Language, Record<PassageDifficulty, string[]>> = {
@@ -245,7 +272,6 @@ export const LESSONS: Lesson[] = [
     keys: ["a", "s", "d", "f"],
     targetWPM: 15,
     targetAccuracy: 95,
-    minDuration: 60,
     category: "home",
     difficulty: "easy",
   },
@@ -256,7 +282,6 @@ export const LESSONS: Lesson[] = [
     keys: ["j", "k", "l"],
     targetWPM: 15,
     targetAccuracy: 95,
-    minDuration: 60,
     category: "home",
     difficulty: "easy",
   },
@@ -267,7 +292,6 @@ export const LESSONS: Lesson[] = [
     keys: ["a", "s", "d", "f", "j", "k", "l"],
     targetWPM: 20,
     targetAccuracy: 95,
-    minDuration: 120,
     category: "home",
     difficulty: "easy",
   },
@@ -278,7 +302,6 @@ export const LESSONS: Lesson[] = [
     keys: ["g", "h"],
     targetWPM: 20,
     targetAccuracy: 95,
-    minDuration: 120,
     category: "home",
     difficulty: "easy",
   },
@@ -289,7 +312,6 @@ export const LESSONS: Lesson[] = [
     keys: ["e", "i"],
     targetWPM: 22,
     targetAccuracy: 95,
-    minDuration: 120,
     category: "upper",
     difficulty: "medium",
   },
@@ -300,7 +322,6 @@ export const LESSONS: Lesson[] = [
     keys: ["r", "u"],
     targetWPM: 25,
     targetAccuracy: 95,
-    minDuration: 120,
     category: "upper",
     difficulty: "medium",
   },
@@ -311,7 +332,6 @@ export const LESSONS: Lesson[] = [
     keys: ["t", "y"],
     targetWPM: 25,
     targetAccuracy: 95,
-    minDuration: 120,
     category: "upper",
     difficulty: "medium",
   },
@@ -322,7 +342,6 @@ export const LESSONS: Lesson[] = [
     keys: ["c", "n"],
     targetWPM: 25,
     targetAccuracy: 95,
-    minDuration: 120,
     category: "lower",
     difficulty: "medium",
   },
@@ -333,7 +352,6 @@ export const LESSONS: Lesson[] = [
     keys: ["v", "m"],
     targetWPM: 28,
     targetAccuracy: 95,
-    minDuration: 120,
     category: "lower",
     difficulty: "medium",
   },
@@ -344,7 +362,6 @@ export const LESSONS: Lesson[] = [
     keys: ["w", "x", "z"],
     targetWPM: 30,
     targetAccuracy: 95,
-    minDuration: 180,
     category: "lower",
     difficulty: "medium",
   },
@@ -355,7 +372,6 @@ export const LESSONS: Lesson[] = [
     keys: ["1", "2", "3", "4", "5"],
     targetWPM: 25,
     targetAccuracy: 95,
-    minDuration: 180,
     category: "numbers",
     difficulty: "hard",
   },
@@ -366,7 +382,6 @@ export const LESSONS: Lesson[] = [
     keys: ["6", "7", "8", "9", "0"],
     targetWPM: 25,
     targetAccuracy: 95,
-    minDuration: 180,
     category: "numbers",
     difficulty: "hard",
   },
@@ -377,7 +392,6 @@ export const LESSONS: Lesson[] = [
     keys: [".", "!", "?"],
     targetWPM: 30,
     targetAccuracy: 95,
-    minDuration: 180,
     category: "symbols",
     difficulty: "hard",
   },
@@ -388,7 +402,6 @@ export const LESSONS: Lesson[] = [
     keys: [],
     targetWPM: 35,
     targetAccuracy: 95,
-    minDuration: 300,
     category: "symbols",
     difficulty: "medium",
   },
@@ -399,7 +412,6 @@ export const LESSONS: Lesson[] = [
     keys: [],
     targetWPM: 45,
     targetAccuracy: 95,
-    minDuration: 300,
     category: "symbols",
     difficulty: "hard",
   },
@@ -518,8 +530,4 @@ export function getPracticeStageKey(lang: Language, currentLesson: number, stric
 
 export function getDifficultyLabelKey(difficulty: PassageDifficulty): string {
   return `difficulty.${difficulty}`
-}
-
-export function isLessonUnlocked(_lessonId: number, _completedIds: number[]): boolean {
-  return true
 }

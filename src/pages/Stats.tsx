@@ -24,8 +24,10 @@ export default function Stats() {
     ? Math.round(stats.reduce((s, x) => s + x.wpm, 0) / stats.length)
     : 0
   const bestWPM = stats.length ? Math.max(...stats.map((s) => s.wpm)) : 0
-  const avgAcc = stats.length
-    ? Math.round(stats.reduce((s, x) => s + x.accuracy, 0) / stats.length)
+  // Free mode has no target text, so its stored 100% accuracy is not a measurement
+  const accStats = stats.filter((x) => x.mode !== "free")
+  const avgAcc = accStats.length
+    ? Math.round(accStats.reduce((s, x) => s + x.accuracy, 0) / accStats.length)
     : 0
 
   // Worst keys by error rate
@@ -107,7 +109,7 @@ export default function Stats() {
                 {worstKeys.map(({ key, errorRate }) => (
                   <button
                     key={key}
-                    onClick={() => navigate(`/exercise/drill/${key}`)}
+                    onClick={() => navigate(`/exercise/drill/${encodeURIComponent(key)}`)}
                     className="flex flex-col items-center rounded-lg border border-border bg-muted px-4 py-2 text-center transition-colors hover:bg-accent"
                   >
                     <kbd className="font-mono text-lg uppercase">{key}</kbd>
