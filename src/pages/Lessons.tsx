@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { CheckCircle2 } from "lucide-react"
-import { LESSONS, getDifficultyLabelKey, isLessonUnlocked } from "../lib/lessons.ts"
+import { LESSONS, getDifficultyLabelKey } from "../lib/lessons.ts"
 import { loadState, type AppState } from "../lib/storage.ts"
 import { t } from "../lib/i18n.ts"
 import { Button } from "../components/ui/Button.tsx"
@@ -61,7 +61,6 @@ export default function Lessons() {
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {lessons.map((lesson) => {
                     const completed = progress.lessonsCompleted.includes(lesson.id)
-                    const unlocked = isLessonUnlocked(lesson.id, progress.lessonsCompleted)
                     const isCurrent = lesson.id === progress.currentLesson
 
                     return (
@@ -78,7 +77,7 @@ export default function Lessons() {
                               <CheckCircle2 className="h-5 w-5 shrink-0 text-green-500" aria-label={t(lang, "lessons.done")} />
                             )}
                             {!completed && isCurrent && <Badge>{t(lang, "lessons.next")}</Badge>}
-                            {!completed && !isCurrent && unlocked && (
+                            {!completed && !isCurrent && (
                               <Badge variant="secondary">{t(lang, "lessons.unlocked")}</Badge>
                             )}
                           </div>

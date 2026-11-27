@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { loadState, saveState } from "../lib/storage.ts"
+import { loadState, updateUser } from "../lib/storage.ts"
 import { t } from "../lib/i18n.ts"
 import { type LayoutId } from "../lib/keyboards.ts"
 import { type Language } from "../lib/i18n.ts"
@@ -20,12 +20,7 @@ export default function Onboarding() {
 
   function handleSubmit() {
     if (!name.trim()) return
-    const s = loadState()
-    s.user.name = name.trim()
-    s.user.layout = layout
-    s.user.language = language
-    s.user.onboardingComplete = true
-    saveState(s)
+    updateUser({ name: name.trim(), layout, language, onboardingComplete: true })
     setStep("done")
   }
 

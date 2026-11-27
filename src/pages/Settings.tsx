@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { loadState, saveState, type AppState } from "../lib/storage.ts"
+import { loadState, updateUser, type AppState } from "../lib/storage.ts"
 import { type LayoutId } from "../lib/keyboards.ts"
 import { type Language, t } from "../lib/i18n.ts"
 import { ACCENT_COLORS, applyTheme } from "../lib/theme.ts"
@@ -21,7 +21,7 @@ export default function Settings() {
   }
 
   function handleSave() {
-    saveState(state)
+    updateUser(state.user)
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
   }
@@ -89,66 +89,22 @@ export default function Settings() {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">{t(lang, "settings.goals")}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label className="mb-1.5 block text-sm font-medium" htmlFor="goalWPM">
-                {t(lang, "settings.targetWpm", { value: user.goalWPM })}
-              </label>
-              <input
-                id="goalWPM"
-                type="range"
-                min={10}
-                max={150}
-                step={5}
-                value={user.goalWPM}
-                onChange={(e) => update("goalWPM", Number(e.target.value))}
-                className="w-full accent-primary"
-              />
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>10</span><span>150</span>
-              </div>
-            </div>
-            <div>
-              <label className="mb-1.5 block text-sm font-medium" htmlFor="goalAccuracy">
-                {t(lang, "settings.targetAccuracy", { value: user.goalAccuracy })}
-              </label>
-              <input
-                id="goalAccuracy"
-                type="range"
-                min={70}
-                max={100}
-                step={1}
-                value={user.goalAccuracy}
-                onChange={(e) => update("goalAccuracy", Number(e.target.value))}
-                className="w-full accent-primary"
-              />
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>70%</span><span>100%</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
             <CardTitle className="text-base">{t(lang, "settings.preferences")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium">{t(lang, "settings.visualFeedback")}</p>
-                <p className="text-xs text-muted-foreground">{t(lang, "settings.visualFeedbackDesc")}</p>
+                <p className="text-sm font-medium">{t(lang, "settings.highlightKeys")}</p>
+                <p className="text-xs text-muted-foreground">{t(lang, "settings.highlightKeysDesc")}</p>
               </div>
               <button
                 role="switch"
-                aria-checked={user.visualFeedback}
-                onClick={() => update("visualFeedback", !user.visualFeedback)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${user.visualFeedback ? "bg-primary" : "bg-muted"}`}
+                aria-checked={user.highlightKeys}
+                onClick={() => update("highlightKeys", !user.highlightKeys)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${user.highlightKeys ? "bg-primary" : "bg-muted"}`}
               >
                 <span
-                  className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${user.visualFeedback ? "translate-x-6" : "translate-x-1"}`}
+                  className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${user.highlightKeys ? "translate-x-6" : "translate-x-1"}`}
                 />
               </button>
             </div>

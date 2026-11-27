@@ -15,7 +15,7 @@ and React Router for navigation. State is persisted to localStorage (no backend)
 - **Framework:** React 18 with react-jsx transform
 - **Bundler:** Vite 5
 - **Styling:** Tailwind CSS 3 with CSS custom properties (HSL design tokens)
-- **UI primitives:** Radix UI (label, progress, select, switch, tabs)
+- **UI primitives:** Radix UI (progress)
 - **Routing:** React Router DOM v6
 - **Charts:** Recharts
 - **Package manager:** npm
@@ -29,6 +29,7 @@ npm run dev          # Start Vite dev server (HMR)
 npm run build        # Type-check (tsc) then build for production (vite build)
 npm run preview      # Preview production build locally
 npm run lint         # ESLint across all .ts/.tsx files (zero warnings allowed)
+npm test             # Vitest, run once (CI runs it before build)
 ```
 
 ### Type Checking
@@ -39,8 +40,8 @@ npx tsc --noEmit     # Type-check without emitting (same as build's first step)
 
 ### Testing
 
-No test framework is configured yet. When adding tests:
-- Prefer Vitest (already Vite-based, zero extra config).
+Vitest is configured (`test` block in `vite.config.ts`; tests run with `TZ=America/New_York`
+so local-day vs UTC-day bugs show up on UTC CI runners).
 - Place test files adjacent to source as `*.test.ts` or `*.test.tsx`.
 - Run a single test file: `npx vitest run src/lib/utils.test.ts`
 - Run all tests: `npx vitest run`

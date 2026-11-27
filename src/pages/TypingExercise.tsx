@@ -9,7 +9,15 @@ import {
   getFreePracticeText,
   LESSONS,
 } from "../lib/lessons.ts"
-import { loadState, saveState, addSession, completeLesson, type AppState } from "../lib/storage.ts"
+import {
+  loadState,
+  updateUser,
+  addSession,
+  completeLesson,
+  updateKeyboardStats,
+  type AppState,
+  type KeyStat,
+} from "../lib/storage.ts"
 import { calculateWPM, calculateAccuracy } from "../lib/utils.ts"
 import { t } from "../lib/i18n.ts"
 import { Button } from "../components/ui/Button.tsx"
@@ -26,6 +34,12 @@ type DictationPhase = "input" | Phase
 interface CharState {
   char: string
   status: "pending" | "correct" | "wrong"
+}
+
+// Normalize a character for comparison: NFC form + typographic apostrophes as "'"
+// (backtick and acute accent are real keys of their own, so they are not mapped)
+function normalizeChar(c: string): string {
+  return c.normalize("NFC").replace(/[\u2018\u2019\u201A\u201B\u2032\u2035]/g, "'")
 }
 
 function buildCharStates(text: string): CharState[] {
@@ -83,31 +97,8 @@ export default function TypingExercise() {
 
   const containerRef = useRef<HTMLDivElement>(null)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-
-  // Reset all exercise state when navigating to a different exercise
-  useEffect(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current)
-      timerRef.current = null
-    }
-    const nextIsFree = mode === "free"
-    const nextIsDictation = mode === "dictation"
-    setChars(nextIsFree || nextIsDictation ? [] : buildCharStates(resolvedText))
-    setCursor(0)
-    setPhase("ready")
-    setStartTime(null)
-    setElapsed(0)
-    setErrors(0)
-    setTotalKeystrokes(0)
-    setFreeText("")
-    setDictationInput("")
-    setDictationPhase(nextIsDictation ? "input" : "ready")
-    if (!nextIsDictation) {
-      setTimeout(() => containerRef.current?.focus(), 0)
-    }
-    // resolvedText is derived from mode/id/lang/strictLiterary — listing those is sufficient
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, id, lang, strictLiterary])
+  // Per-key error counts for this run, saved for the Stats "keys to practice" list
+  const keyStatsRef = useRef<Record<string, KeyStat>>({})
 
   // Toggle states from user settings
   const [showKeyboard, setShowKeyboard] = useState(state.user.showKeyboard)
@@ -144,23 +135,21 @@ export default function TypingExercise() {
   function toggleKeyboard() {
     const next = !showKeyboard
     setShowKeyboard(next)
-    const s = loadState()
-    s.user.showKeyboard = next
-    saveState(s)
+    updateUser({ showKeyboard: next })
   }
 
   function toggleFingerGuide() {
     const next = !showFingerGuide
     setShowFingerGuide(next)
-    const s = loadState()
-    s.user.showFingerGuide = next
-    saveState(s)
+    updateUser({ showFingerGuide: next })
   }
 
   // Start dictation: transition from input phase to ready
   function startDictation() {
-    if (!dictationInput.trim()) return
-    setChars(buildCharStates(dictationInput))
+    // Newlines and tabs cannot be typed here (Enter/Tab are not characters), so flatten them
+    const text = dictationInput.trim().replace(/\s+/g, " ")
+    if (!text) return
+    setChars(buildCharStates(text))
     setCursor(0)
     setPhase("ready")
     setDictationPhase("ready")
@@ -173,7 +162,6 @@ export default function TypingExercise() {
     const finalElapsed = Math.max(1, elapsed)
     const finalWPM = calculateWPM(freeText.length, finalElapsed)
     addSession({
-      date: new Date().toISOString().split("T")[0],
       wpm: finalWPM,
       accuracy: 100,
       keystrokes: freeText.length,
@@ -186,7 +174,8 @@ export default function TypingExercise() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (e.ctrlKey || e.metaKey || e.altKey) return
+      // Block Ctrl/Cmd shortcuts but allow AltGr (which sets both ctrlKey+altKey on Windows)
+      if (e.metaKey || (e.ctrlKey && !e.altKey)) return
       if (e.key === "Tab") {
         e.preventDefault()
         return
@@ -235,13 +224,20 @@ export default function TypingExercise() {
       if (cursor >= chars.length) return
 
       const expected = chars[cursor].char
-      const correct = key === expected
+      const correct = normalizeChar(key) === normalizeChar(expected)
       const newChars = [...chars]
       newChars[cursor] = { char: expected, status: correct ? "correct" : "wrong" }
       setChars(newChars)
       setCursor((c) => c + 1)
       setTotalKeystrokes((t) => t + 1)
       if (!correct) setErrors((err) => err + 1)
+      // Letters and digits only: other characters make unusable drill URLs ("." , "/", "?")
+      if (/[\p{L}\d]/u.test(expected)) {
+        const k = expected.toLowerCase()
+        const stat = (keyStatsRef.current[k] ??= { errors: 0, total: 0 })
+        stat.total += 1
+        if (!correct) stat.errors += 1
+      }
 
       // Finished
       if (cursor + 1 >= chars.length) {
@@ -256,8 +252,8 @@ export default function TypingExercise() {
           totalKeystrokes + 1,
         )
 
+        updateKeyboardStats(keyStatsRef.current)
         addSession({
-          date: new Date().toISOString().split("T")[0],
           wpm: finalWPM,
           accuracy: finalAcc,
           keystrokes: totalKeystrokes + 1,
@@ -295,6 +291,7 @@ export default function TypingExercise() {
     setErrors(0)
     setTotalKeystrokes(0)
     setFreeText("")
+    keyStatsRef.current = {}
     if (timerRef.current) clearInterval(timerRef.current)
     if (!isDictation) {
       setTimeout(() => containerRef.current?.focus(), 0)
@@ -324,7 +321,7 @@ export default function TypingExercise() {
         <header className="border-b border-border bg-card">
           <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-3">
             <button className="text-lg font-bold text-primary" onClick={() => navigate("/")}>
-              TypingMaster
+              Unseen Keys
             </button>
             <div className="text-sm text-muted-foreground">{t(lang, "exercise.dictation")}</div>
             <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
@@ -367,7 +364,7 @@ export default function TypingExercise() {
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-3">
           <button className="text-lg font-bold text-primary" onClick={() => navigate("/")}>
-            TypingMaster
+            Unseen Keys
           </button>
           <div className="text-sm text-muted-foreground">
             {lesson
@@ -604,7 +601,7 @@ export default function TypingExercise() {
 
         {/* Visual keyboard */}
         {showKeyboard && phase !== "done" && (
-          <KeyboardVisual layout={state.user.layout} activeKey={nextExpectedKey} />
+          <KeyboardVisual layout={state.user.layout} activeKey={state.user.highlightKeys ? nextExpectedKey : undefined} />
         )}
 
         {/* Finger guide */}
@@ -612,7 +609,7 @@ export default function TypingExercise() {
           <FingerGuide
             layout={state.user.layout}
             lang={lang}
-            nextExpectedKey={nextExpectedKey}
+            nextExpectedKey={state.user.highlightKeys ? nextExpectedKey : undefined}
           />
         )}
       </main>

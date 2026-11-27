@@ -12,7 +12,7 @@ const en: Translations = {
   "nav.settings": "Settings",
 
   // Onboarding
-  "onboarding.welcome": "Welcome to TypingMaster",
+  "onboarding.welcome": "Welcome to Unseen Keys",
   "onboarding.description": "Learn touch typing step by step, track your progress, and improve your speed and accuracy.",
   "onboarding.nameLabel": "What's your name?",
   "onboarding.namePlaceholder": "Enter your name",
@@ -115,12 +115,7 @@ const en: Translations = {
   "settings.title": "Settings",
   "settings.profile": "Profile",
   "settings.name": "Name",
-  "settings.goals": "Goals",
-  "settings.targetWpm": "Target WPM: {value}",
-  "settings.targetAccuracy": "Target Accuracy: {value}%",
   "settings.preferences": "Preferences",
-  "settings.visualFeedback": "Visual Feedback",
-  "settings.visualFeedbackDesc": "Highlight correct / wrong keystrokes",
   "settings.keyboardLayout": "Keyboard Layout",
   "settings.language": "Language",
   "settings.save": "Save Settings",
@@ -129,6 +124,8 @@ const en: Translations = {
   "settings.strictLiteraryFrenchDesc": "Skip beginner progression — always use full literary French passages",
   "settings.appearance": "Appearance",
   "settings.accentColor": "Accent Color",
+  "settings.highlightKeys": "Highlight Next Key",
+  "settings.highlightKeysDesc": "Show the next expected key highlighted on the keyboard",
 
   // Keyboard layouts
   "layout.qwerty": "QWERTY (US)",
@@ -161,7 +158,7 @@ const fr: Translations = {
   "nav.settings": "Paramètres",
 
   // Onboarding
-  "onboarding.welcome": "Bienvenue sur TypingMaster",
+  "onboarding.welcome": "Bienvenue sur Unseen Keys",
   "onboarding.description": "Apprenez la dactylographie étape par étape, suivez vos progrès et améliorez votre vitesse et votre précision.",
   "onboarding.nameLabel": "Comment vous appelez-vous ?",
   "onboarding.namePlaceholder": "Entrez votre nom",
@@ -264,12 +261,7 @@ const fr: Translations = {
   "settings.title": "Paramètres",
   "settings.profile": "Profil",
   "settings.name": "Nom",
-  "settings.goals": "Objectifs",
-  "settings.targetWpm": "MPM cible : {value}",
-  "settings.targetAccuracy": "Précision cible : {value}%",
   "settings.preferences": "Préférences",
-  "settings.visualFeedback": "Retour visuel",
-  "settings.visualFeedbackDesc": "Mettre en évidence les frappes correctes / incorrectes",
   "settings.keyboardLayout": "Disposition du clavier",
   "settings.language": "Langue",
   "settings.save": "Enregistrer",
@@ -278,6 +270,8 @@ const fr: Translations = {
   "settings.strictLiteraryFrenchDesc": "Ignorer la progression débutant — toujours utiliser des extraits littéraires complets",
   "settings.appearance": "Apparence",
   "settings.accentColor": "Couleur d'accentuation",
+  "settings.highlightKeys": "Mise en évidence de la touche",
+  "settings.highlightKeysDesc": "Afficher la prochaine touche attendue en surbrillance sur le clavier",
 
   // Keyboard layouts
   "layout.qwerty": "QWERTY (US)",

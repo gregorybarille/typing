@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom"
-import { type AppState, saveState } from "../lib/storage.ts"
+import { type AppState, type UserSettings, updateUser } from "../lib/storage.ts"
 import { type LayoutId } from "../lib/keyboards.ts"
 import { type Language, t } from "../lib/i18n.ts"
 import { Button } from "./ui/Button.tsx"
@@ -19,7 +19,8 @@ export default function Header({ state, onStateChange }: HeaderProps) {
       ...state,
       user: { ...state.user, [key]: value },
     }
-    saveState(next)
+    // Save only this field, so a stale page copy never overwrites progress made elsewhere
+    updateUser({ [key]: value } as Partial<UserSettings>)
     onStateChange(next)
   }
 
@@ -34,7 +35,7 @@ export default function Header({ state, onStateChange }: HeaderProps) {
           className="shrink-0 text-xl font-bold text-primary"
           onClick={() => navigate("/")}
         >
-          TypingMaster
+          Unseen Keys
         </button>
 
         {/* Nav */}
