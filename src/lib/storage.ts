@@ -8,6 +8,7 @@ export interface UserSettings {
   language: Language;
   showKeyboard: boolean;
   showFingerGuide: boolean;
+  highlightKeys: boolean;
   name: string;
   onboardingComplete: boolean;
   strictLiteraryFrench: boolean;
@@ -52,6 +53,7 @@ const DEFAULT_STATE: AppState = {
     language: "en",
     showKeyboard: true,
     showFingerGuide: false,
+    highlightKeys: true,
     name: "",
     onboardingComplete: false,
     strictLiteraryFrench: false,
